@@ -1,0 +1,45 @@
+name: Build and Package Qt App
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    # Install Qt automatically on all platforms
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.x'
+
+    # Configure CMake
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+    # Build the project
+    - name: Build Project
+      run: cmake --build build --config Release
+
+    # Package using CMake's install command
+    - name: Install/Package
+      run: cmake --install build --prefix ./package
+
+    # Upload the compiled package so you can download it from GitHub
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: HelloWorldApp-${{ matrix.os }}
+        path: ./package/

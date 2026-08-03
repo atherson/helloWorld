@@ -19,7 +19,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # Install Qt automatically on all platforms with aqtinstall version support
+    # Install Qt automatically on all platforms
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
@@ -29,16 +29,17 @@ jobs:
     - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
+    # Build Project
     - name: Build Project
       run: cmake --build build --config Release
 
-    # Package using CMake's install command
+    # Package using CMake's install command with an absolute path
     - name: Install/Package
-      run: cmake --install build --prefix ./package
+      run: cmake --install build --prefix "${{ github.workspace }}/package"
 
     # Upload the compiled package to GitHub Actions artifacts
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: HelloWorldApp-${{ matrix.os }}
-        path: ./package/
+        path: package/

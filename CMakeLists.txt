@@ -1,13 +1,16 @@
 cmake_minimum_required(VERSION 3.16)
 project(HelloWorldApp VERSION 1.0 LANGUAGES CXX)
 
-# Fix for macOS Xcode 15+ where legacy AGL.framework was removed
-if(APPLE)
-    set(OPENGL_agl_LIBRARY "" CACHE STRING "" FORCE)
-endif()
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# --- APPLE AGL FRAMEWORK FIX ---
+# Find standard OpenGL first, then trick CMake into using it instead of the missing AGL framework
+if(APPLE)
+    find_package(OpenGL REQUIRED)
+    set(OPENGL_agl_LIBRARY ${OPENGL_gl_LIBRARY} CACHE FILEPATH "Bypass AGL" FORCE)
+endif()
+# -------------------------------
 
 # Find Qt6 components
 find_package(Qt6 REQUIRED COMPONENTS Widgets)

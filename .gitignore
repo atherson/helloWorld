@@ -1,0 +1,40 @@
+# --- Build & Output Directories ---
+build/
+dist/
+bin/
+
+# --- CMake Generated Files ---
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+*.cmake
+!CMakeLists.txt
+
+# --- Compiled Objects & Binaries ---
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.out
+
+# --- Qt Specific Auto-Generated Files ---
+.qmake.stash
+*.pro.user
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+
+# --- IDEs and Editors ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Operating System Files ---
+.DS_Store
+Thumbs.db

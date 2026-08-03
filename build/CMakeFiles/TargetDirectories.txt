@@ -1,5 +1,0 @@
-/home/atherson/Desktop/Projects/qt/build/CMakeFiles/hello.dir
-/home/atherson/Desktop/Projects/qt/build/CMakeFiles/edit_cache.dir
-/home/atherson/Desktop/Projects/qt/build/CMakeFiles/rebuild_cache.dir
-/home/atherson/Desktop/Projects/qt/build/CMakeFiles/hello_autogen_timestamp_deps.dir
-/home/atherson/Desktop/Projects/qt/build/CMakeFiles/hello_autogen.dir

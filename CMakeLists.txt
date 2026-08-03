@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
 project(HelloWorldApp VERSION 1.0 LANGUAGES CXX)
 
+# Fix for macOS Xcode 15+ where legacy AGL.framework was removed
+if(APPLE)
+    set(OPENGL_agl_LIBRARY "" CACHE STRING "" FORCE)
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -21,13 +26,11 @@ target_link_libraries(HelloWorldApp PRIVATE
 
 # --- PORTABLE DEPLOYMENT CONFIGURATION ---
 
-# 1. Instruct CMake where to place the executable on install
 install(TARGETS HelloWorldApp
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# 2. Automatically generate a deployment script to grab Qt DLLs/libraries
 qt_generate_deploy_app_script(
     TARGET HelloWorldApp
     OUTPUT_SCRIPT deploy_script

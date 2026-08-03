@@ -19,17 +19,16 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # Install Qt automatically on all platforms
+    # Install Qt automatically on all platforms with aqtinstall version support
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
-        version: '6.x'
+        version: '6.8.*'
 
     # Configure CMake
     - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
-    # Build the project
     - name: Build Project
       run: cmake --build build --config Release
 
@@ -37,7 +36,7 @@ jobs:
     - name: Install/Package
       run: cmake --install build --prefix ./package
 
-    # Upload the compiled package so you can download it from GitHub
+    # Upload the compiled package to GitHub Actions artifacts
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:

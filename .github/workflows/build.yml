@@ -14,7 +14,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Define the OS and the expected CPack extension for artifacts
         include:
           - os: ubuntu-latest
             ext: tar.gz
@@ -47,11 +46,11 @@ jobs:
 
     # Configure CMake
     - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON
 
     # Build the Project
     - name: Build Project
-      run: cmake --build build --config Release
+      run: cmake --build build --config Release --verbose
 
     # Package the deployed app into a ZIP/TAR using CPack
     - name: Package Release

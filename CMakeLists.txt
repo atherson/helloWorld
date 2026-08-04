@@ -7,16 +7,28 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(GNUInstallDirs)
 
 # --- APPLE AGL FRAMEWORK FIX ---
-# Modern macOS SDKs removed AGL.framework.
-# Redirect AGL requests directly to OpenGL.framework BEFORE Qt6 loads FindOpenGL.
+# Modern macOS SDKs (Xcode 15+) removed AGL.framework completely.
+# Find the actual path to OpenGL.framework and set OPENGL_agl_LIBRARY to it BEFORE Qt6 loads.
 if(APPLE)
-    set(OPENGL_agl_LIBRARY "-framework OpenGL" CACHE STRING "Bypass missing AGL framework" FORCE)
+    find_library(OPENGL_gl_LIBRARY OpenGL)
+    if(OPENGL_gl_LIBRARY)
+        set(OPENGL_agl_LIBRARY "${OPENGL_gl_LIBRARY}" CACHE FILEPATH "Bypass missing AGL framework" FORCE)
+    endif()
 endif()
 # -------------------------------
 
 # Find Qt6 and set up standard tools (moc, uic, rcc)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 qt_standard_project_setup()
+
+# Post-Qt cleanup: Ensure '-framework AGL' is stripped from the imported OpenGL target if present
+if(APPLE AND TARGET OpenGL::GL)
+    get_target_property(_gl_deps OpenGL::GL INTERFACE_LINK_LIBRARIES)
+    if(_gl_deps)
+        list(REMOVE_ITEM _gl_deps "-framework AGL")
+        set_target_properties(OpenGL::GL PROPERTIES INTERFACE_LINK_LIBRARIES "${_gl_deps}")
+    endif()
+endif()
 
 # Define executable
 qt_add_executable(HelloWorldApp main.cpp)

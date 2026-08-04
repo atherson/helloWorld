@@ -8,10 +8,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(GNUInstallDirs)
 
 # --- APPLE AGL FRAMEWORK FIX ---
-# Bypasses the missing AGL framework error on modern macOS SDKs
+# This MUST be set BEFORE find_package(Qt6) is called. 
+# It prevents CMake's internal FindOpenGL script from attaching the 
+# deprecated AGL framework to the OpenGL::GL target interface.
 if(APPLE)
-    find_package(OpenGL REQUIRED)
-    set(OPENGL_agl_LIBRARY ${OPENGL_gl_LIBRARY} CACHE FILEPATH "Bypass AGL" FORCE)
+    set(OPENGL_agl_LIBRARY "" CACHE FILEPATH "Bypass missing AGL" FORCE)
 endif()
 # -------------------------------
 

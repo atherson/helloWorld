@@ -4,15 +4,13 @@ project(HelloWorldApp VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Standard install paths
 include(GNUInstallDirs)
 
 # --- APPLE AGL FRAMEWORK FIX ---
-# This MUST be set BEFORE find_package(Qt6) is called. 
-# It prevents CMake's internal FindOpenGL script from attaching the 
-# deprecated AGL framework to the OpenGL::GL target interface.
+# Modern macOS SDKs removed AGL.framework.
+# Redirect AGL requests directly to OpenGL.framework BEFORE Qt6 loads FindOpenGL.
 if(APPLE)
-    set(OPENGL_agl_LIBRARY "" CACHE FILEPATH "Bypass missing AGL" FORCE)
+    set(OPENGL_agl_LIBRARY "-framework OpenGL" CACHE STRING "Bypass missing AGL framework" FORCE)
 endif()
 # -------------------------------
 
@@ -27,13 +25,12 @@ qt_add_executable(HelloWorldApp main.cpp)
 target_link_libraries(HelloWorldApp PRIVATE Qt6::Widgets)
 
 # --- DEPLOYMENT & INSTALLATION ---
-# Define where the executable goes when installed
 install(TARGETS HelloWorldApp
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# Generates the deployment script to copy Qt dependencies next to the executable
+# Generates deployment script to copy Qt dependencies
 qt_generate_deploy_app_script(
     TARGET HelloWorldApp
     OUTPUT_SCRIPT deploy_script
@@ -42,7 +39,6 @@ qt_generate_deploy_app_script(
 install(SCRIPT ${deploy_script})
 
 # --- CPACK PACKAGING ---
-# Automatically generates .zip or .tar.gz archives containing the deployed app
 set(CPACK_PACKAGE_NAME "HelloWorldApp")
 set(CPACK_PACKAGE_VENDOR "Developer")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A simple Qt6 Hello World Application")
